@@ -1,0 +1,23 @@
+#tablero {
+  border: 7px solid;
+  border-color: rgb(255, 66, 66);
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+#celda {
+  margin: 0;
+  height: 1px;
+  width: 1px;
+}
+
+.girarMotoIzquierda {
+  transform: rotate(45deg);
+}
+
