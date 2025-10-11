@@ -18,6 +18,20 @@ const MotoAzul = {
   
 }
 
+const CopiaMotoAzul = {
+  img: new Image(),
+  x: 450,
+  y: 318,
+  ancho: 15,
+  alto: 35,
+  angulo: 0,
+  lastMove: "arriba",
+  estado: "vivo",
+  estela: EstelaAzul,
+  velocidad: 2
+  
+}
+
 const MotoRoja = {
   img: new Image(),
   x: 150,
@@ -36,7 +50,7 @@ inicialitzar();
 
 function inicialitzar() {
     tableroInicial();
-    setInterval(RehacerTablero, 1000 / 360);
+    setInterval(RehacerTablero, 1000 / 300);
     
 }
 
@@ -55,7 +69,7 @@ function tableroInicial() {
   celda.fillStyle = 'rgba(255, 255, 255, 1)';
   celda.fillRect(3, 300, 10000, 1);
   
-let cargadas = 0;
+  let cargadas = 0;
   function imagenCargada() {
     cargadas++;
     if (cargadas === 2) {
@@ -100,7 +114,13 @@ function RehacerTablero() {
       celda.rotate(MotoAzul.angulo);
       celda.drawImage(MotoAzul.img,-MotoAzul.ancho / 2, -MotoAzul.alto / 2, MotoAzul.ancho, MotoAzul.alto);
       celda.restore();
+      
+      if (MotoAzul.x === 18 && MotoAzul.lastMove === "izquierda") {
+        teletransporte(618, MotoAzul.y)
+      }
+
     }
+
 }
 
 document.addEventListener("keydown", function(event) {
@@ -179,9 +199,6 @@ document.addEventListener("keydown", function(event) {
         RehacerTablero();
       }
       break;
-
-    default:
-      break;
   }
 })
 
@@ -220,4 +237,30 @@ function correrAzul() {
     case "abajo": MotoAzul.y += MotoAzul.velocidad;
       break; 
   }
+}
+
+function teletransporte(x, y) {
+  const canvas = document.getElementById("tablero");
+  const celda = canvas.getContext('2d');
+  
+  CopiaMotoAzul.x = 500;
+  CopiaMotoAzul.y = y;
+
+  let cargadas = 0;
+  function imagenCargada() {
+    cargadas++;
+    if (cargadas === 1) {
+      RehacerTablero();
+    }
+  }
+  CopiaMotoAzul.img.onload = imagenCargada;
+  
+  CopiaMotoAzul.img.src = "img/motoAzul.png";
+
+  celda.save();
+  celda.translate(CopiaMotoAzul.x, CopiaMotoAzul.y);
+  celda.rotate(CopiaMotoAzul.angulo);
+  celda.drawImage(CopiaMotoAzul.img,-CopiaMotoAzul.ancho / 2, -CopiaMotoAzul.alto / 2, CopiaMotoAzul.ancho, CopiaMotoAzul.alto);
+  celda.restore();
+
 }
