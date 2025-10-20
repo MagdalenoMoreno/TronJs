@@ -12,7 +12,8 @@ const MotoAzul = {
   estela: [],
   longitudEstela: 600,
   velocidad: 2,
-  hitbox: []
+  hitbox: [],
+  victorias: 0
   
 }
 
@@ -29,22 +30,31 @@ const MotoRoja = {
   estela: [],
   longitudEstela: 600,
   velocidad: 2,
-  hitbox: []
+  hitbox: [],
+  victorias: 0
 }
 
 let intervaloJuego;
 let inicioPartida = false;
+
+let contadorAbajo = 0;
+let contadorArriba = 600;
 
 inicialitzar();
 
 
 function inicialitzar() {
   tableroInicial();
+  let intervaloLinea = setInterval(borrarLinea, 100 / 10);
     setTimeout(() => {
+      clearInterval(intervaloLinea);
+      contadorAbajo = 0;
+      contadorArriba = 0;
       inicioPartida = true;
       intervaloJuego = setInterval(RehacerTablero, 1000 / 300);
 
     }, 3000);
+
     
 }
 
@@ -63,7 +73,7 @@ function tableroInicial() {
   }
   
   celda.fillStyle = 'rgba(255, 255, 255, 1)';
-  celda.fillRect(0, 300, 1000, 1);
+  celda.fillRect(0, contadorAbajo, contadorArriba, 1);
   
   let cargadas = 0;
   function imagenCargada() {
@@ -96,12 +106,14 @@ function RehacerTablero() {
     celda.fillRect(0, 0, 600, 600)
 
     celda.fillStyle = 'rgba(255, 255, 255, 1)';
-    celda.fillRect(3, 300, 10000, 1);
+    celda.fillRect(contadorAbajo, 300, contadorArriba, 1);
 
-    mover();
+    if (inicioPartida) { 
+      mover();
+    }
 
     if (MotoAzul.estado !== "vivo" || MotoRoja.estado !== "vivo") {
-      console.log("Game Over");
+      inicioPartida = false;
       clearInterval(intervaloJuego);
       ganador();
     } else {
@@ -368,11 +380,31 @@ function chocar() {
 }
 
 function ganador() {
+
+  let div = document.createElement("div");
+  let h1 = document.createElement("h1");
+  
   if (MotoAzul.estado === "vivo") {
-    console.log("Ha ganado la moto azul");
+    h1.textContent = "Ha ganado la moto azul!!";
+    div.classList.add("ganadorAzul");
+    MotoAzul.victorias++;
   } else if (MotoRoja.estado === "vivo") {
-    console.log("Ha ganado la moto roja");
+    h1.textContent = "Ha ganado la moto roja!!";
+    div.classList.add("ganadorRojo");
+    MotoRoja.victorias++;
   } else {
-    console.log("Empate!!!")
+    h1.textContent = "Empate!!!";
+    div.classList.add("ganador");
   }
+
+  div.appendChild(h1)
+  document.body.appendChild(div);
+
 }
+
+function borrarLinea() {
+  contadorAbajo += 1;
+  contadorArriba -= 2;
+  RehacerTablero();
+}
+
